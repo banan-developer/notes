@@ -1,11 +1,20 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 )
+
+// структура для хранения заметок
+type Note struct {
+	ID      int    `json:"id"`
+	Content string `json:"content"`
+	UserID  int    `json:"user_id"`
+}
 
 // временное хранилище(имитация бд)
 var notes []Note
@@ -13,18 +22,16 @@ var nextID = 1
 
 func main() {
 
-	// .................шаблон подлкючения к бд(пока без него).......................
+	db, err := sql.Open("mysql", "root:NeeGan4562!?@tcp(127.0.0.1:3306)/notes_app")
+	if err != nil {
+		log.Fatal("ошибка подлкючения к базе данных", err)
+	}
+	err = db.Ping()
+	if err != nil {
+		log.Fatal("Error of connect", err)
+	}
 
-	// db, err := sql.Open("mysql", "root:NeeGan4562!?@tcp(127.0.0.1:3306)/onesnippet")
-	// if err != nil {
-	// 	log.Fatal("ошибка подлкючения к базе данных", err)
-	// }
-	// err = db.Ping()
-	// if err != nil {
-	// 	log.Fatal("Error of connect", err)
-	// }
-
-	// fmt.Println("Подключено к MySQL")
+	fmt.Println("Подключено к MySQL")
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", homeHandler)
@@ -37,7 +44,7 @@ func main() {
 
 	// запуск сервера
 	log.Println("Запуск сервера на http://127.0.0.1:4000")
-	err := http.ListenAndServe(":4000", mux)
+	err = http.ListenAndServe(":4000", mux)
 	if err != nil {
 		log.Fatal(err)
 	}

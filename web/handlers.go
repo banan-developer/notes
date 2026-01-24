@@ -7,12 +7,6 @@ import (
 	"strings"
 )
 
-// структура для хранения заметок
-type Note struct {
-	ID      int    `json:"id"`
-	Content string `json:"content"`
-}
-
 // домашний хэндлер
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./pkg/ui/html/index.html")
@@ -35,7 +29,6 @@ func notesHandler(w http.ResponseWriter, r *http.Request) {
 
 // функция для get запросов
 func getNote(w http.ResponseWriter, r *http.Request) {
-
 	// просто отправляем на фронт все заметки в json
 	w.Header().Set("Content-Type", "application/json")
 	err := json.NewEncoder(w).Encode(notes)
