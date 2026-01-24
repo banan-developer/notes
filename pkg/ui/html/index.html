@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+</head>
+
+<body>
+    <div class="main" id="div">
+        <h1>Заметки</h1>
+        <div class="input-container">
+            <input class="textArea" type="text" placeholder="Начните писать заметку ❤️" v-model="inputValue"
+                @keypress.enter="addNotes" />
+        </div>
+        <div class="button-container">
+            <button class="addButton" @click="addNotes" >Добавить заметку</button>
+        </div>
+
+        <ul class="list-item">
+            <li class="list" v-for="(note, i) in nodes" :key="note.id">
+                <span class="note-text">{{note.content}}</span>
+                <button class="clear" @click="clearNotes(note.id)">clear</button>
+            </li>
+        </ul>
+        <div class="if" v-if="nodes.length === 0">Заметок нет</div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    // counter: 0,
+                    // title: 'Счетчик:0',
+                    // myPlaceholder: 'enter any text',
+                    isLoad: false,
+                    inputValue: '',
+                    nodes: []
+                }
+            },
+            mounted(){
+                this.loadNotes()
+            },
+            methods: {
+                async addNotes() {
+                    if (!this.isLoad) return
+                    if (!this.inputValue.trim()) return
+
+                    try{
+                        const res = await fetch("/api/notes",{
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ content: this.inputValue })
+                        })
+                        const createdNote = await res.json()
+                        console.log(createdNote)
+                        
+                        if (!res.ok) throw new Error('Ошибка добавления заметки')
+
+                        await this.loadNotes()
+                        this.inputValue = ''
+
+
+                    }catch(err){
+                        console.error(err)
+                    }
+                },
+                async clearNotes(noteId) {
+                    try{
+                        const res = await fetch(`/api/notes/${noteId}`, {
+                            method: `DELETE`
+                        })
+                        if (!res.ok) throw new Error('Ошибка удаления')
+                        await this.loadNotes()
+
+                    }catch(err){
+                        console.error(err)
+                    }
+                },
+
+                async loadNotes(){
+                    try{
+                        const res = await fetch("/api/notes")
+                        if (!res.ok) throw new Error("Ошибка загрузки заметок")
+                        const data = await res.json()
+                        this.nodes = data
+                        this.isLoad = true
+
+                    }catch (err){
+                        console.error(err)
+                    }
+                },
+                
+
+            }
+        }
+        Vue.createApp(App).mount('#div')
+    </script>
+</body>
+</html>

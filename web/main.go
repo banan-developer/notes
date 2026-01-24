@@ -1,0 +1,44 @@
+package main
+
+import (
+	"log"
+	"net/http"
+
+	_ "github.com/go-sql-driver/mysql"
+)
+
+// временное хранилище(имитация бд)
+var notes []Note
+var nextID = 1
+
+func main() {
+
+	// .................шаблон подлкючения к бд(пока без него).......................
+
+	// db, err := sql.Open("mysql", "root:NeeGan4562!?@tcp(127.0.0.1:3306)/onesnippet")
+	// if err != nil {
+	// 	log.Fatal("ошибка подлкючения к базе данных", err)
+	// }
+	// err = db.Ping()
+	// if err != nil {
+	// 	log.Fatal("Error of connect", err)
+	// }
+
+	// fmt.Println("Подключено к MySQL")
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", homeHandler)
+	mux.HandleFunc("/api/notes/", notesHandler)
+	mux.HandleFunc("/api/notes", notesHandler)
+
+	// подключение стилей
+	fileServer := http.FileServer(http.Dir("./pkg/ui/static/"))
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+
+	// запуск сервера
+	log.Println("Запуск сервера на http://127.0.0.1:4000")
+	err := http.ListenAndServe(":4000", mux)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
