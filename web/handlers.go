@@ -29,9 +29,28 @@ func notesHandler(w http.ResponseWriter, r *http.Request) {
 
 // функция для get запросов
 func getNote(w http.ResponseWriter, r *http.Request) {
+	rows, err := db.Query(
+		"SELECT id, content, user_id FROM notes WHERE user_id = 1",
+	)
+
+	if err != nil {
+		http.Error(w, "DB error", http.StatusInternalServerError)
+		return
+	}
+
+	defer rows.Close()
+
+	var notes []Note
+
+	for rows.Next() {
+		var note Note
+		rows.Scan(&note.ID, &note.Content, &note.UserID)
+		notes = append(notes, note)
+	}
+
 	// просто отправляем на фронт все заметки в json
 	w.Header().Set("Content-Type", "application/json")
-	err := json.NewEncoder(w).Encode(notes)
+	err = json.NewEncoder(w).Encode(notes)
 	if err != nil {
 		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
 	}
@@ -47,11 +66,17 @@ func createNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	note.ID = nextID
-	nextID++
+	note.UserID = 1
 
-	// добавляем ее в наш "бд"
-	notes = append(notes, note)
+	result, err := db.Exec("INSERT INTO notes (content, user_id) VALUES (?, ?)", note.Content, note.UserID)
+
+	if err != nil {
+		http.Error(w, "DB error", http.StatusInternalServerError)
+		return
+	}
+
+	id, _ := result.LastInsertId()
+	note.ID = int(id)
 
 	// отправляем обратно на фронт
 	w.Header().Set("Content-Type", "application/json")
@@ -76,14 +101,13 @@ func deleteNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// удаление заметки из массива
-	for i, note := range notes {
-		if note.ID == id {
-			notes = append(notes[:i], notes[i+1:]...)
+	_, err = db.Exec("DELETE FROM notes WHERE id = ? AND user_id = 1",
+		id,
+	)
 
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
+	if err != nil {
+		http.Error(w, "DB error", http.StatusInternalServerError)
+		return
 	}
-	http.Error(w, "Note not found", http.StatusNotFound)
+	w.WriteHeader(http.StatusNoContent)
 }

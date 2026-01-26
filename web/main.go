@@ -16,13 +16,11 @@ type Note struct {
 	UserID  int    `json:"user_id"`
 }
 
-// временное хранилище(имитация бд)
-var notes []Note
-var nextID = 1
+var db *sql.DB
 
 func main() {
-
-	db, err := sql.Open("mysql", "root:NeeGan4562!?@tcp(127.0.0.1:3306)/notes_app")
+	var err error
+	db, err = sql.Open("mysql", "root:NeeGan4562!?@tcp(127.0.0.1:3306)/notes_app")
 	if err != nil {
 		log.Fatal("ошибка подлкючения к базе данных", err)
 	}
