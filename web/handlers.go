@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -48,6 +49,10 @@ func getNote(w http.ResponseWriter, r *http.Request) {
 		notes = append(notes, note)
 	}
 
+	if notes == nil {
+		notes = []Note{}
+	}
+
 	// просто отправляем на фронт все заметки в json
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(notes)
@@ -68,10 +73,10 @@ func createNote(w http.ResponseWriter, r *http.Request) {
 
 	note.UserID = 1
 
-	result, err := db.Exec("INSERT INTO notes (content, user_id) VALUES (?, ?)", note.Content, note.UserID)
+	result, err := db.Exec("INSERT INTO notes (content, user_id, created_at) VALUES (?, ?)", note.Content, note.UserID)
 
 	if err != nil {
-		http.Error(w, "DB error", http.StatusInternalServerError)
+		log.Println("MYSQL INSERT ERROR:", err)
 		return
 	}
 
@@ -106,7 +111,6 @@ func deleteNote(w http.ResponseWriter, r *http.Request) {
 	)
 
 	if err != nil {
-		http.Error(w, "DB error", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

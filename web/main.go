@@ -14,6 +14,7 @@ type Note struct {
 	ID      int    `json:"id"`
 	Content string `json:"content"`
 	UserID  int    `json:"user_id"`
+	Time    string `json:"create_at"`
 }
 
 var db *sql.DB

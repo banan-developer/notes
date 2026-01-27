@@ -9,6 +9,12 @@
 </head>
 
 <body>
+    <div class="menu">
+        <ul id="panel">
+            <li><a href="#">📒</a></li>
+            <li><a href="#">🧑‍💼</a></li> 
+        </ul>
+    </div>
     <div class="main" id="div">
         <h1>Заметки</h1>
         <div class="input-container">
@@ -36,7 +42,7 @@
                     // counter: 0,
                     // title: 'Счетчик:0',
                     // myPlaceholder: 'enter any text',
-                    isLoad: false,
+                    // isLoad: false,
                     inputValue: '',
                     nodes: []
                 }
@@ -87,7 +93,7 @@
                         if (!res.ok) throw new Error("Ошибка загрузки заметок")
                         const data = await res.json()
                         this.nodes = data
-                        this.isLoad = true
+                        // this.isLoad = true
 
                     }catch (err){
                         console.error(err)
