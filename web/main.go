@@ -33,9 +33,12 @@ func main() {
 	fmt.Println("Подключено к MySQL")
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", homeHandler)
 	mux.HandleFunc("/api/notes/", notesHandler)
 	mux.HandleFunc("/api/notes", notesHandler)
+
+	mux.HandleFunc("/", homeHandler)
+	mux.HandleFunc("/register", regHandler)
+	mux.HandleFunc("/login", autoresHandler)
 
 	// подключение стилей
 	fileServer := http.FileServer(http.Dir("./pkg/ui/static/"))
