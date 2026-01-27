@@ -116,3 +116,35 @@ body {
     color: #8f887d;
     font-style: italic;
 }
+
+.menu {
+    position: fixed;        /* фиксируем относительно окна */
+    top: 20px;
+    right: 20px;
+}
+
+#panel {
+    list-style: none;       /* убираем маркеры */
+    margin: 0;
+    padding: 0;
+    display: flex;          /* выстраиваем в ряд */
+    gap: 10px;              /* расстояние между кнопками */
+}
+
+#panel li a {
+    border: 2px solid #c6b9a2;
+    display: flex;
+    width: 45px;
+    height: 45px;
+    text-decoration: none;
+    background-color: #d8cfc0;
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;     /* можно убрать, если нужны строгие квадраты */
+    transition: background-color 0.3s;
+}
+
+#panel li a:hover {
+    background-color: #555;
+}

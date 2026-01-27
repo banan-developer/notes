@@ -9,8 +9,19 @@ import (
 
 // домашний хэндлер
 func homeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
 	http.ServeFile(w, r, "./pkg/ui/html/index.html")
+}
 
+func autoresHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./pkg/ui/html/auto.html")
+}
+
+func regHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./pkg/ui/html/registration.html")
 }
 
 // главный хэндлер(get,post и delete в одном хэндлере)

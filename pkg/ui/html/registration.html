@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" type="text/css" href="../static/style_for_reg.css" />
+</head>
+<body>
+    <h2>Регистрация</h2>
+        <form method="post" autocomplete="off" action="http://localhost:8080/login.php">
+            <p>
+                <label for="email">Логин</label>
+                <input type="email" name="email" placeholder="Введите email" autocomplete="on" required id="email"/> 
+            </p>
+
+            <p>
+                <label for="email">Пароль</label>
+                <input type="password" name="password" placeholder="Введите пароль" required id="password"/>
+            </p>
+
+            <p>
+                <label for="email">Повторите пароль</label>
+                <input type="password" name="password" placeholder="Повторите пароль" required id="password"/>
+            </p>
+            
+            <p>
+                <button type="submit" formmethod="get", formaction="file.html">Отправить</button>
+                <button type="reset">Отмена</button>
+            </p>
+
+            <p>
+                <span><a href="/">Вернутся обратно</a></span>
+            </p>
+            
+</body>
+</html>
+
