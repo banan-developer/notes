@@ -77,11 +77,13 @@ func (app *application) createNote(w http.ResponseWriter, r *http.Request) {
 	var note Note
 	// получаем заметку
 	err := json.NewDecoder(r.Body).Decode(&note)
+
 	if err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
+	// временная заглушка под пользователя
 	note.UserID = 1
 
 	result, err := app.db.Exec("INSERT INTO notes (content, user_id) VALUES (?, ?)", note.Content, note.UserID)
@@ -92,6 +94,7 @@ func (app *application) createNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// забирем id из result
 	id, _ := result.LastInsertId()
 	note.ID = int(id)
 
