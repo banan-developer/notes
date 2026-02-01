@@ -40,7 +40,7 @@ label {
 /* ====== inputs ====== */
 input[type="email"],
 input[type="password"] {
-    width: 100%;
+    width: 95%;
     padding: 10px 12px;
     font-size: 15px;
     background-color: #fffdf8;

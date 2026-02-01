@@ -7,16 +7,17 @@
     <link rel="stylesheet" type="text/css" href="../static/style_for_reg.css" />
 </head>
 <body>
-     <h2>Авторизация</h2>
+     <div id="div_auth">
+        <h2>Авторизация</h2>
         <form method="get">
             <fieldset>
                 <legend>Введите данные</legend>
 
                 <label for="email">Логин:</label>
-                <input type="email"  id="email" required/><br/><br>
+                <input type="email"  id="email" required v-model="inputValue_email"/><br/><br>
 
                 <label for="password" id="password">Пароль</label>
-                <input type="password"  id="password" required/><br><br>
+                <input type="password"  id="password" required v-model="inputValue_pass"/><br><br>
 
                 <button type="submit" formaction="file.html" formmethod="get">Войти</button>
                 <button type="reset">Отменить</button>
@@ -26,5 +27,25 @@
                 <span>Нет аккаунта? <a href="/register">Регистрация</a></span>
             </p>
         </form>
+
+        <span><p>Email: {{inputValue_email}}</p></span>
+        <span><p>Password: {{inputValue_pass}}</p></span>
+     </div>
+
+     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    inputValue_email: '',
+                    inputValue_pass: '',
+                }
+            },
+            methods: {
+            }
+        }
+        Vue.createApp(App).mount('#div_auth')
+    </script>
+
 </body>
 </html>

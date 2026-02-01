@@ -61,10 +61,10 @@ body {
 }
 
 .addButton {
+    border: 2px solid #c6b9a2;
     padding: 8px 16px;
     font-size: 14px;
-    background-color: #d8cfc0;
-    border: 1px solid #bfb5a6;
+    background-color: #d8cfc0;;
     border-radius: 3px;
     cursor: pointer;
     color: #2b2b2b;
@@ -147,4 +147,28 @@ body {
 
 #panel li a:hover {
     background-color: #555;
+}
+
+.footer {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 15px;
+  opacity: 0.7;
+  margin-bottom: 5px;
+}
+
+.footer a {
+  color: #6f685e;      
+  text-decoration: none;
+  bottom: -17px;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.footer a:hover {
+  text-decoration: underline;
+  opacity: 1;
 }

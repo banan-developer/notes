@@ -7,21 +7,22 @@
     <link rel="stylesheet" type="text/css" href="../static/style_for_reg.css" />
 </head>
 <body>
-    <h2>Регистрация</h2>
+    <div id="div_reg">
+        <h2>Регистрация</h2>
         <form method="post" autocomplete="off" action="http://localhost:8080/login.php">
             <p>
                 <label for="email">Логин</label>
-                <input type="email" name="email" placeholder="Введите email" autocomplete="on" required id="email"/> 
+                <input type="email" name="email" placeholder="Введите email" autocomplete="on" required id="email" v-model="inputValue_email"/> 
             </p>
 
             <p>
                 <label for="email">Пароль</label>
-                <input type="password" name="password" placeholder="Введите пароль" required id="password"/>
+                <input type="password" name="password" placeholder="Введите пароль" required id="password" v-model="inputValue_pass"/>
             </p>
 
             <p>
                 <label for="email">Повторите пароль</label>
-                <input type="password" name="password" placeholder="Повторите пароль" required id="password"/>
+                <input type="password" name="password" placeholder="Повторите пароль" required id="password" v-model="inputValue_rep_pass"/>
             </p>
             
             <p>
@@ -30,8 +31,30 @@
             </p>
 
             <p>
-                <span><a href="/">Вернутся обратно</a></span>
+                <span><a href="/">Вернуться обратно</a></span>
             </p>
+
+            <span><p>{{inputValue_email}}</p></span>
+            <span><p>{{inputValue_pass}}</p></span>
+            <span><p>{{inputValue_rep_pass}}</p></span>
+    </div>
+
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    inputValue_email: '',
+                    inputValue_pass: '',
+                    inputValue_rep_pass: '',
+                }
+            },
+            methods: {
+            }
+        }
+        Vue.createApp(App).mount('#div_reg')
+    </script>
             
 </body>
 </html>

@@ -41,6 +41,8 @@ func notesHandler(w http.ResponseWriter, r *http.Request) {
 
 // функция для get запросов
 func getNote(w http.ResponseWriter, r *http.Request) {
+
+	// rows - указатель на результат в базе(db.query - возвращает адрес)
 	rows, err := db.Query(
 		"SELECT id, content, user_id FROM notes WHERE user_id = 1",
 	)
@@ -77,20 +79,24 @@ func createNote(w http.ResponseWriter, r *http.Request) {
 	var note Note
 	// получаем заметку
 	err := json.NewDecoder(r.Body).Decode(&note)
+
 	if err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
+	// временная заглушка под пользователя
 	note.UserID = 1
 
-	result, err := db.Exec("INSERT INTO notes (content, user_id, created_at) VALUES (?, ?)", note.Content, note.UserID)
+	// result хранит, что сделала БД(бд создала id (Auto Increment))
+	result, err := db.Exec("INSERT INTO notes (content, user_id) VALUES (?, ?)", note.Content, note.UserID)
 
 	if err != nil {
 		log.Println("MYSQL INSERT ERROR:", err)
 		return
 	}
 
+	// забирем id из result
 	id, _ := result.LastInsertId()
 	note.ID = int(id)
 
