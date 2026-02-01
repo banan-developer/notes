@@ -2,14 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
 // домашний хэндлер
-func homeHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
@@ -17,35 +16,36 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./pkg/ui/html/index.html")
 }
 
-func autoresHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) autoresHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./pkg/ui/html/auto.html")
 }
 
-func regHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) regHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./pkg/ui/html/registration.html")
 }
 
 // главный хэндлер(get,post и delete в одном хэндлере)
-func notesHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) notesHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		getNote(w, r)
+		app.getNote(w, r)
 	case http.MethodPost:
-		createNote(w, r)
+		app.createNote(w, r)
 	case http.MethodDelete:
-		deleteNote(w, r)
+		app.deleteNote(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
 // функция для get запросов
-func getNote(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query(
+func (app *application) getNote(w http.ResponseWriter, r *http.Request) {
+	rows, err := app.db.Query(
 		"SELECT id, content, user_id FROM notes WHERE user_id = 1",
 	)
 
 	if err != nil {
+		app.errorLog.Println("DB QUERY ERROR:", err)
 		http.Error(w, "DB error", http.StatusInternalServerError)
 		return
 	}
@@ -73,7 +73,7 @@ func getNote(w http.ResponseWriter, r *http.Request) {
 }
 
 // функция для post запросов
-func createNote(w http.ResponseWriter, r *http.Request) {
+func (app *application) createNote(w http.ResponseWriter, r *http.Request) {
 	var note Note
 	// получаем заметку
 	err := json.NewDecoder(r.Body).Decode(&note)
@@ -84,10 +84,11 @@ func createNote(w http.ResponseWriter, r *http.Request) {
 
 	note.UserID = 1
 
-	result, err := db.Exec("INSERT INTO notes (content, user_id, created_at) VALUES (?, ?)", note.Content, note.UserID)
+	result, err := app.db.Exec("INSERT INTO notes (content, user_id) VALUES (?, ?)", note.Content, note.UserID)
 
 	if err != nil {
-		log.Println("MYSQL INSERT ERROR:", err)
+		app.errorLog.Println("DB INSERT ERROR:", err)
+		app.errorLog.Println("MYSQL INSERT ERROR:", err)
 		return
 	}
 
@@ -105,7 +106,7 @@ func createNote(w http.ResponseWriter, r *http.Request) {
 }
 
 // функция для delete запросов
-func deleteNote(w http.ResponseWriter, r *http.Request) {
+func (app *application) deleteNote(w http.ResponseWriter, r *http.Request) {
 
 	// вытаскиваем id из url
 	idStr := strings.TrimPrefix(r.URL.Path, "/api/notes/")
@@ -113,11 +114,12 @@ func deleteNote(w http.ResponseWriter, r *http.Request) {
 	// превращаем айди в число
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
+		app.errorLog.Println("DB DELETE ERROR:", err)
 		http.Error(w, "Invalid note id", http.StatusBadRequest)
 		return
 	}
 
-	_, err = db.Exec("DELETE FROM notes WHERE id = ? AND user_id = 1",
+	_, err = app.db.Exec("DELETE FROM notes WHERE id = ? AND user_id = 1",
 		id,
 	)
 

@@ -2,12 +2,20 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"flag"
 	"log"
 	"net/http"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 )
+
+// структура для хранения зависимостей (логирование и бд)
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger
+	db       *sql.DB
+}
 
 // структура для хранения заметок
 type Note struct {
@@ -17,37 +25,51 @@ type Note struct {
 	Time    string `json:"create_at"`
 }
 
-var db *sql.DB
-
 func main() {
-	var err error
-	db, err = sql.Open("mysql", "root:NeeGan4562!?@tcp(127.0.0.1:3306)/notes_app")
+	// создание файла для отлавливания ошибок
+	f, err := os.OpenFile("info.log", os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
-		log.Fatal("ошибка подлкючения к базе данных", err)
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
+	errorLog := log.New(f, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	db, err := sql.Open("mysql", "root:NeeGan4562!?@tcp(127.0.0.1:3306)/notes_app")
+	if err != nil {
+		errorLog.Fatal("ошибка подлкючения к базе данных", err)
 	}
 	err = db.Ping()
 	if err != nil {
-		log.Fatal("Error of connect", err)
+		errorLog.Fatal("Error of connect", err)
 	}
 
-	fmt.Println("Подключено к MySQL")
+	app := &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
+		db:       db,
+	}
+
+	addr := flag.String("addr", ":4000", "Сетевой адрес веб-сервера")
+	flag.Parse()
+
+	infoLog.Println("Подключено к MySQL")
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/notes/", notesHandler)
-	mux.HandleFunc("/api/notes", notesHandler)
+	mux.HandleFunc("/api/notes/", app.notesHandler)
+	mux.HandleFunc("/api/notes", app.notesHandler)
 
-	mux.HandleFunc("/", homeHandler)
-	mux.HandleFunc("/register", regHandler)
-	mux.HandleFunc("/login", autoresHandler)
+	mux.HandleFunc("/", app.homeHandler)
+	mux.HandleFunc("/register", app.regHandler)
+	mux.HandleFunc("/login", app.autoresHandler)
 
 	// подключение стилей
 	fileServer := http.FileServer(http.Dir("./pkg/ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// запуск сервера
-	log.Println("Запуск сервера на http://127.0.0.1:4000")
-	err = http.ListenAndServe(":4000", mux)
-	if err != nil {
-		log.Fatal(err)
-	}
+	infoLog.Printf("Запуск сервера на %s", *addr)
+	err = http.ListenAndServe(*addr, mux)
+	app.errorLog.Fatal(err)
 }
