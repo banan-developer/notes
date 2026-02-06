@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"notes/auth"
 	"strconv"
 	"strings"
 )
@@ -16,12 +17,95 @@ func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./pkg/ui/html/index.html")
 }
 
+// авторизация пользователя
 func (app *application) autoresHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./pkg/ui/html/auto.html")
+	if r.Method == http.MethodGet {
+		http.ServeFile(w, r, "./pkg/ui/html/auto.html")
+		return
+	}
+
+	// получения значения в input через поля
+	if r.Method == http.MethodPost {
+		email := r.FormValue("email")
+		password := r.FormValue("password")
+
+		if email == "" || password == "" {
+			http.Error(w, "email and password required", http.StatusBadRequest)
+			return
+		}
+
+		var UserId int
+		var PasswordFrombd string
+
+		// получаем данные из бд а потом сравниваем пароль из базы данных и написанным в input
+		rows, err := app.db.Query(
+			"SELECT id, password FROM users WHERE login = ?",
+			email,
+		)
+		if err != nil {
+			http.Error(w, "invalid credentials", http.StatusUnauthorized)
+			return
+		}
+		defer rows.Close()
+
+		if !rows.Next() {
+			http.Error(w, "invalid credentials", http.StatusUnauthorized)
+			return
+		}
+
+		err = rows.Scan(&UserId, &PasswordFrombd)
+		if err != nil {
+			http.Error(w, "invalid credentials", http.StatusUnauthorized)
+			return
+		}
+
+		if password != PasswordFrombd {
+			http.Error(w, "invalid credentials", http.StatusUnauthorized)
+			return
+		}
+
+		auth.SetUserID(w, r, UserId)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+
 }
 
+// регистрация
 func (app *application) regHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./pkg/ui/html/registration.html")
+	if r.Method == http.MethodGet {
+		http.ServeFile(w, r, "./pkg/ui/html/registration.html")
+		return
+	}
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// получение значения в input через поля
+	email := r.FormValue("email")
+	password := r.FormValue("password")
+
+	if email == "" || password == "" {
+		http.Error(w, "email and password required", http.StatusBadRequest)
+		return
+	}
+	// внесения данных в бд
+	_, err := app.db.Exec("INSERT INTO users (login, password) VALUES (?, ?)", email, password)
+
+	if err != nil {
+		app.errorLog.Println("REGISTER ERROR:", err)
+		http.Error(w, "DB error", http.StatusInternalServerError)
+		return
+	}
+
+	// если все хорошо, то пользователь создан и перех к авторизации
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
+// выход из сессии
+func (app *application) exitSession(w http.ResponseWriter, r *http.Request) {
+	auth.СlearSessions(w, r)
+	http.ServeFile(w, r, "./pkg/ui/html/index.html")
 }
 
 // главный хэндлер(get,post и delete в одном хэндлере)
@@ -40,8 +124,9 @@ func (app *application) notesHandler(w http.ResponseWriter, r *http.Request) {
 
 // функция для get запросов
 func (app *application) getNote(w http.ResponseWriter, r *http.Request) {
+	UserID, _ := auth.GetUserId(r)
 	rows, err := app.db.Query(
-		"SELECT id, content, user_id FROM notes WHERE user_id = 1",
+		"SELECT id, content, user_id FROM notes WHERE user_id = ?", UserID,
 	)
 
 	if err != nil {
@@ -83,8 +168,13 @@ func (app *application) createNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// временная заглушка под пользователя
-	note.UserID = 1
+	// получение айди пользователя
+	UserID, ok := auth.GetUserId(r)
+	if !ok {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+	note.UserID = UserID
 
 	result, err := app.db.Exec("INSERT INTO notes (content, user_id) VALUES (?, ?)", note.Content, note.UserID)
 
@@ -122,8 +212,10 @@ func (app *application) deleteNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = app.db.Exec("DELETE FROM notes WHERE id = ? AND user_id = 1",
-		id,
+	UserId, _ := auth.GetUserId(r)
+
+	_, err = app.db.Exec("DELETE FROM notes WHERE id = ? AND user_id = ?",
+		id, UserId,
 	)
 
 	if err != nil {

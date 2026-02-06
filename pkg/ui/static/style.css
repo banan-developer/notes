@@ -134,11 +134,11 @@ body {
 #panel li a {
     border: 2px solid #c6b9a2;
     display: flex;
-    width: 45px;
+    width: 60px;
     height: 45px;
     text-decoration: none;
     background-color: #d8cfc0;
-    color: #fff;
+    color: #f7f7f7;
     justify-content: center;
     align-items: center;
     border-radius: 6px;     /* можно убрать, если нужны строгие квадраты */

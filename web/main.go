@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"flag"
 	"log"
 	"net/http"
+	"notes/auth"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -51,25 +51,23 @@ func main() {
 		db:       db,
 	}
 
-	addr := flag.String("addr", ":4000", "Сетевой адрес веб-сервера")
-	flag.Parse()
-
 	infoLog.Println("Подключено к MySQL")
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/notes/", app.notesHandler)
-	mux.HandleFunc("/api/notes", app.notesHandler)
+	mux.Handle("/api/notes/", auth.RequireAuth(http.HandlerFunc(app.notesHandler)))
+	mux.Handle("/api/notes", auth.RequireAuth(http.HandlerFunc(app.notesHandler)))
 
 	mux.HandleFunc("/", app.homeHandler)
 	mux.HandleFunc("/register", app.regHandler)
 	mux.HandleFunc("/login", app.autoresHandler)
+	mux.HandleFunc("/exit", app.exitSession)
 
 	// подключение стилей
 	fileServer := http.FileServer(http.Dir("./pkg/ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// запуск сервера
-	infoLog.Printf("Запуск сервера на %s", *addr)
-	err = http.ListenAndServe(*addr, mux)
+	infoLog.Printf("Запуск сервера на http://127.0.0.1:4000")
+	err = http.ListenAndServe(":4000", mux)
 	app.errorLog.Fatal(err)
 }
