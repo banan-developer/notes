@@ -36,7 +36,7 @@ func main() {
 	infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(f, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	db, err := sql.Open("mysql", "root:NeeGan4562!?@tcp(127.0.0.1:3306)/notes_app")
+	db, err := sql.Open("mysql", "root:ТУТ ПАРОЛЬ ОТ ВАШЕЙ БД?@tcp(127.0.0.1:3306)/notes_app")
 	if err != nil {
 		errorLog.Fatal("ошибка подлкючения к базе данных", err)
 	}
