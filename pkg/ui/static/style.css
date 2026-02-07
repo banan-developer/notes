@@ -1,4 +1,4 @@
-/* ====== base ====== */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -7,23 +7,23 @@
 }
 
 body {
-    background-color: #e6dfd3; /* фон как старая бумага */
-    color: #2b2b2b;            /* цвет "чернил" */
+    background-color: #e6dfd3; 
+    color: #2b2b2b;            
     line-height: 1.6;
     padding: 40px 0;
 }
 
-/* ====== main container ====== */
+
 .main {
     width: 600px;
     margin: 0 auto;
-    background-color: #f7f3ea; /* страница книги */
+    background-color: #f7f3ea; 
     padding: 30px 40px;
     border-radius: 4px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* ====== title ====== */
+
 .main h1 {
     text-align: center;
     margin-bottom: 25px;
@@ -31,7 +31,7 @@ body {
     letter-spacing: 1px;
 }
 
-/* ====== input ====== */
+
 .input-container {
     margin-bottom: 15px;
 }
@@ -54,7 +54,7 @@ body {
     border-color: #a89f8f;
 }
 
-/* ====== button ====== */
+
 .button-container {
     margin-bottom: 25px;
     text-align: right;
@@ -74,7 +74,6 @@ body {
     background-color: #cfc5b6;
 }
 
-/* ====== list ====== */
 .list-item {
     list-style: none;
 }
@@ -84,7 +83,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px dashed #cfc6b8; /* как линия в тетради */
+    border-bottom: 1px dashed #cfc6b8; 
 }
 
 .list:last-child {
@@ -96,7 +95,7 @@ body {
     word-break: break-word;
 }
 
-/* ====== clear button ====== */
+
 .clear {
     background: none;
     border: none;
@@ -109,7 +108,7 @@ body {
     text-decoration: underline;
 }
 
-/* ====== empty state ====== */
+
 .if {
     text-align: center;
     margin-top: 20px;
@@ -118,17 +117,17 @@ body {
 }
 
 .menu {
-    position: fixed;        /* фиксируем относительно окна */
+    position: fixed;        
     top: 20px;
     right: 20px;
 }
 
 #panel {
-    list-style: none;       /* убираем маркеры */
+    list-style: none;       
     margin: 0;
     padding: 0;
-    display: flex;          /* выстраиваем в ряд */
-    gap: 10px;              /* расстояние между кнопками */
+    display: flex;          
+    gap: 10px;              
 }
 
 #panel li a {
@@ -141,7 +140,7 @@ body {
     color: #f7f7f7;
     justify-content: center;
     align-items: center;
-    border-radius: 6px;     /* можно убрать, если нужны строгие квадраты */
+    border-radius: 6px;     
     transition: background-color 0.3s;
 }
 
