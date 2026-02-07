@@ -1,2 +1,5 @@
-INFO	2026/02/06 19:46:06 Подключено к MySQL
-INFO	2026/02/06 19:46:06 Запуск сервера на http://127.0.0.1:4000
+INFO	2026/02/08 02:05:52 Подключено к MySQL
+INFO	2026/02/08 02:05:52 Запуск сервера на http://127.0.0.1:4000/login
+2026/02/08 01:28:40 authenticator.go:97: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'
+ERROR	2026/02/08 01:28:55 authenticator.go:97: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'
+ERROR	2026/02/08 01:29:23 authenticator.go:97: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'

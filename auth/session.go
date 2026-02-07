@@ -7,7 +7,15 @@ import (
 )
 
 // создание сессии
-var Store = sessions.NewCookieStore([]byte("key!!!!"))
+var Store = sessions.NewCookieStore([]byte("KEY!!!"))
+
+func InitStore() {
+	Store.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   60 * 60 * 24,
+		HttpOnly: true,
+	}
+}
 
 const sessionName = "notes-session"
 const userIDKey = "user_id"
@@ -31,12 +39,12 @@ func GetUserId(r *http.Request) (int, bool) {
 }
 
 // выход из сессии
-func СlearSessions(w http.ResponseWriter, r *http.Request) error {
-	sessions, err := Store.Get(r, sessionName)
+func ClearSessions(w http.ResponseWriter, r *http.Request) error {
+	session, err := Store.Get(r, sessionName)
 	if err != nil {
 		return err
 	}
-	sessions.Options.MaxAge = -1
+	session.Options.MaxAge = -1
 
 	return sessions.Save(r, w)
 }

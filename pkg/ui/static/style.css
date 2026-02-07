@@ -149,26 +149,3 @@ body {
     background-color: #555;
 }
 
-.footer {
-  position: fixed;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 15px;
-  opacity: 0.7;
-  margin-bottom: 5px;
-}
-
-.footer a {
-  color: #6f685e;      
-  text-decoration: none;
-  bottom: -17px;
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.footer a:hover {
-  text-decoration: underline;
-  opacity: 1;
-}

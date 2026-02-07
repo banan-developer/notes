@@ -42,7 +42,7 @@ func main() {
 	}
 	err = db.Ping()
 	if err != nil {
-		errorLog.Fatal("Error of connect", err)
+		errorLog.Fatal("Ошибка подключения", err)
 	}
 
 	app := &application{
@@ -52,7 +52,7 @@ func main() {
 	}
 
 	infoLog.Println("Подключено к MySQL")
-
+	auth.InitStore()
 	mux := http.NewServeMux()
 	mux.Handle("/api/notes/", auth.RequireAuth(http.HandlerFunc(app.notesHandler)))
 	mux.Handle("/api/notes", auth.RequireAuth(http.HandlerFunc(app.notesHandler)))
@@ -67,7 +67,7 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// запуск сервера
-	infoLog.Printf("Запуск сервера на http://127.0.0.1:4000")
+	infoLog.Printf("Запуск сервера на http://127.0.0.1:4000/login")
 	err = http.ListenAndServe(":4000", mux)
 	app.errorLog.Fatal(err)
 }

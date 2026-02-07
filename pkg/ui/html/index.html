@@ -34,10 +34,6 @@
         <div class="if" v-if="nodes.length === 0">Заметок нет</div>
     </div>
 
-    <div class="footer">
-        <p>made a Banana</p>
-        <a href="https://vk.com/banana2009rusprokilleryt">VK</a>
-    </div>
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
@@ -93,7 +89,6 @@
                         if (!res.ok) throw new Error("Ошибка загрузки заметок")
                         const data = await res.json()
                         this.nodes = data
-                        // this.isLoad = true
 
                     }catch (err){
                         console.error(err)
