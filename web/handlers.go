@@ -187,6 +187,14 @@ func (app *application) updateNotes(w http.ResponseWriter, r *http.Request) {
 	var note Note
 	err := json.NewDecoder(r.Body).Decode(&note)
 
+	// если заметка пустая после редактирвание, то удаляем
+	if note.Content == "" {
+		_, err := app.db.Exec("DELETE FROM notes content where id = ?", note.ID)
+		if err != nil {
+			http.Error(w, "DB DELETE ERROR", http.StatusBadRequest)
+		}
+	}
+
 	if err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
