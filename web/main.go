@@ -25,6 +25,16 @@ type Note struct {
 	Time    string `json:"create_at"`
 }
 
+type User struct {
+	Email string `json:"email"`
+}
+
+type Errors struct {
+	NoPerson      string `json:"no_person"`
+	PersonIsExec  string `json:"is_exec"`
+	WrongPassword string `json:"wrong_password"`
+}
+
 func main() {
 	// создание файла для отлавливания ошибок
 	f, err := os.OpenFile("info.log", os.O_RDWR|os.O_CREATE, 0666)
@@ -36,7 +46,7 @@ func main() {
 	infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(f, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	db, err := sql.Open("mysql", "root:ТУТ ПАРОЛЬ ОТ ВАШЕЙ БД?@tcp(127.0.0.1:3306)/notes_app")
+	db, err := sql.Open("mysql", "root:NotNeeGanAtlast123456@tcp(127.0.0.1:3306)/notes_app")
 	if err != nil {
 		errorLog.Fatal("ошибка подлкючения к базе данных", err)
 	}
@@ -61,13 +71,15 @@ func main() {
 	mux.HandleFunc("/register", app.regHandler)
 	mux.HandleFunc("/login", app.autoresHandler)
 	mux.HandleFunc("/exit", app.exitSession)
+	mux.HandleFunc("/email", app.getEmail)
+	mux.HandleFunc("/edit", app.editNotes)
 
 	// подключение стилей
 	fileServer := http.FileServer(http.Dir("./pkg/ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// запуск сервера
-	infoLog.Printf("Запуск сервера на http://127.0.0.1:4000/login")
-	err = http.ListenAndServe(":4000", mux)
+	infoLog.Printf("Запуск сервера на http://127.0.0.1:8080/login")
+	err = http.ListenAndServe(":8080", mux)
 	app.errorLog.Fatal(err)
 }

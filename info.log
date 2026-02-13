@@ -1,5 +1,12 @@
-INFO	2026/02/08 02:05:52 Подключено к MySQL
-INFO	2026/02/08 02:05:52 Запуск сервера на http://127.0.0.1:4000/login
-2026/02/08 01:28:40 authenticator.go:97: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'
-ERROR	2026/02/08 01:28:55 authenticator.go:97: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'
-ERROR	2026/02/08 01:29:23 authenticator.go:97: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'
+INFO	2026/02/13 14:13:06 Подключено к MySQL
+INFO	2026/02/13 14:13:06 Запуск сервера на http://127.0.0.1:8080/login
+ERROR	2026/02/13 14:14:06 handlers.go:144: DB ERROR sql: no rows in result set
+ng "undefined": invalid syntax
+6/02/12 23:39:36 handlers.go:188: DB UPDATE ERROR: strconv.Atoi: parsing "": invalid syntax
+ERROR	2026/02/12 23:41:57 handlers.go:188: DB UPDATE ERROR: strconv.Atoi: parsing "": invalid syntax
+ parsing "/api/notes/244": invalid syntax
+ERROR	2026/02/12 22:43:59 handlers.go:164: DB DELETE ERROR: strconv.Atoi: parsing "/api/notes/245": invalid syntax
+12 16:55:43 authenticator.go:93: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'
+/02/10 13:26:31 authenticator.go:102: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'
+ERROR	2026/02/10 13:26:35 authenticator.go:102: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'
+RROR	2026/02/09 22:33:26 handlers.go:142: DB ERROR sql: no rows in result set

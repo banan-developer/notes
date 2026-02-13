@@ -9,11 +9,12 @@
 <body>
     <div id="div_reg">
         <h2>Регистрация</h2>
-        <form method="post" action="/register">
+        <form method="POST" action="/register">
             <p>
-                <label for="email">Логин</label>
+                <label for="email">Почта</label>
                 <input type="email" name="email" placeholder="Введите email" autocomplete="on" required id="email" /> 
             </p>
+        
 
             <p>
                 <label for="email">Пароль</label>
@@ -29,9 +30,46 @@
                 <span><a href="/">Вернуться обратно</a></span>
             </p>
 
+            <div v-if="flag == 1">
+                <p>ошибка: пользователь с таким email уже существует</p>
+            </div>
+
 
     </div>
+ <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    error_person_is_exec : "",
+                    flag: 0
 
+                }
+            },
+            mounted(){
+                this.catchError()
+            },
+            methods: {
+               async loadErrors(){
+                    try{
+                        const res = await fetch("/register")
+                        if (!res.ok) throw new Error("Ошибка загрузки ошибок")
+                        const data = await res.json()
+                        this.error_person_is_exec = data.is_exec
+
+                    }catch(err){
+                        console.log(err)
+                    }  
+                },
+                catchError(){
+                    if (document.location.href.includes("#error2") == true){
+                        this.flag = 1
+                    }
+                }
+            }
+        }
+        Vue.createApp(App).mount('#div_reg')
+    </script>
 
             
 </body>

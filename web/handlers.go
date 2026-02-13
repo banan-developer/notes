@@ -26,6 +26,8 @@ func (app *application) notesHandler(w http.ResponseWriter, r *http.Request) {
 		app.createNote(w, r)
 	case http.MethodDelete:
 		app.deleteNote(w, r)
+	case http.MethodPut:
+		app.updateNotes(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -131,4 +133,64 @@ func (app *application) deleteNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (app *application) getEmail(w http.ResponseWriter, r *http.Request) {
+	UserID, _ := auth.GetUserId(r)
+	var user User
+	err := app.db.QueryRow("SELECT login FROM users WHERE id  = ?", UserID).Scan(&user.Email)
+
+	if err != nil {
+		app.errorLog.Println("DB ERROR", err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	err = json.NewEncoder(w).Encode(user)
+	if err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
+
+}
+
+func (app *application) editNotes(w http.ResponseWriter, r *http.Request) {
+	var note Note
+	idStr := r.URL.Query().Get("id")
+
+	// превращаем айди в число
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		app.errorLog.Println("DB EDIT ERROR:", err)
+		http.Error(w, "Invalid note id", http.StatusBadRequest)
+		return
+	}
+
+	err = app.db.QueryRow("SELECT content FROM notes where id = ?", id).Scan(&note.Content)
+	if err != nil {
+		app.errorLog.Println("Note not found:", err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	err = json.NewEncoder(w).Encode(note)
+	if err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
+
+}
+
+// обнавление заметки
+func (app *application) updateNotes(w http.ResponseWriter, r *http.Request) {
+
+	// получение контента и айдишника из фронта
+	var note Note
+	err := json.NewDecoder(r.Body).Decode(&note)
+
+	if err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+	// обновления заметки в бд с нужным idшником
+	_, err = app.db.Exec("UPDATE notes SET content = ? where id = ?", note.Content, note.ID)
 }

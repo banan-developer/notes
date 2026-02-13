@@ -14,6 +14,8 @@ func InitStore() {
 		Path:     "/",
 		MaxAge:   60 * 60 * 24,
 		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+		Secure:   true,
 	}
 }
 

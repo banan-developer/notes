@@ -26,8 +26,51 @@
             <p>
                 <span>Нет аккаунта? <a href="/register">Регистрация</a></span>
             </p>
+
+            <div v-if="flag == 1">
+                <p>ошибка: неверный логин или пароль</p> 
+           </div>
         </form>
+           
+
+
      </div>
+
+      <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    error_wrong_pass : "",
+                    flag : 0,
+
+                }
+            },
+            mounted(){
+                this.loadErrors()
+                this.catchErr()
+            },
+            methods: {
+               async loadErrors(){
+                    try{
+                        const res = await fetch("/login")
+                        if (!res.ok) throw new Error("Ошибка загрузки ошибок")
+                        const data = await res.json()
+                        this.error_wrong_pass = data.wrong_password
+                    }catch(err){
+                        console.log(err)
+                    }  
+                },
+                catchErr(){
+                    if (document.location.href.includes("#error1") == true){
+                        this.flag = 1
+                    }
+                }
+
+            }
+        }
+        Vue.createApp(App).mount('#div_auth')
+    </script>
 
 </body>
 </html>

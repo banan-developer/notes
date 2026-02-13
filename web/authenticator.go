@@ -61,8 +61,8 @@ func (app *application) autoresHandler(w http.ResponseWriter, r *http.Request) {
 		if HashError == nil {
 			auth.SetUserID(w, r, UserId)
 		} else {
-			http.Error(w, "Неверный логин или пароль", http.StatusUnauthorized)
-			return
+			// http.Error(w, "Неверный логин или пароль", http.StatusUnauthorized)
+			http.Redirect(w, r, "/login#error1", http.StatusSeeOther)
 		}
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -85,18 +85,14 @@ func (app *application) regHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 
-	if email == "" || password == "" {
-		http.Error(w, "email and password required", http.StatusBadRequest)
-		return
-	}
 	// внесения данных в бд
 	hashedPassword, _ := hashPassword(password)
 	_, err := app.db.Exec("INSERT INTO users (login, password) VALUES (?, ?)", email, hashedPassword)
 
 	if err != nil {
 		app.errorLog.Println("REGISTER ERROR:", err)
-		http.Error(w, "Пользователь с таким email уже существует", http.StatusInternalServerError)
-		return
+		// http.Error(w, "Пользователь с таким email уже существует", http.StatusInternalServerError)
+		http.Redirect(w, r, "/register#error2", http.StatusSeeOther)
 	}
 
 	// если все хорошо, то пользователь создан и перех к авторизации
