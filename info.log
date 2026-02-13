@@ -1,9 +1,9 @@
-INFO	2026/02/13 14:13:06 Подключено к MySQL
-INFO	2026/02/13 14:13:06 Запуск сервера на http://127.0.0.1:8080/login
-ERROR	2026/02/13 14:14:06 handlers.go:144: DB ERROR sql: no rows in result set
-ng "undefined": invalid syntax
-6/02/12 23:39:36 handlers.go:188: DB UPDATE ERROR: strconv.Atoi: parsing "": invalid syntax
-ERROR	2026/02/12 23:41:57 handlers.go:188: DB UPDATE ERROR: strconv.Atoi: parsing "": invalid syntax
+INFO	2026/02/13 17:31:45 Подключено к MySQL
+INFO	2026/02/13 17:31:45 Запуск сервера на http://127.0.0.1:8080/login
+ERROR	2026/02/13 17:31:57 handlers.go:144: DB ERROR sql: no rows in result set
+ERROR	2026/02/13 17:33:19 authenticator.go:93: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'
+ERROR	2026/02/13 17:34:50 handlers.go:144: DB ERROR sql: no rows in result set
+
  parsing "/api/notes/244": invalid syntax
 ERROR	2026/02/12 22:43:59 handlers.go:164: DB DELETE ERROR: strconv.Atoi: parsing "/api/notes/245": invalid syntax
 12 16:55:43 authenticator.go:93: REGISTER ERROR: Error 1062 (23000): Duplicate entry 'clesstirss@gmail.com' for key 'users.login'

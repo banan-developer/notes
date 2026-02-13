@@ -14,6 +14,10 @@
                 <label for="email">Почта</label>
                 <input type="email" name="email" placeholder="Введите email" autocomplete="on" required id="email" /> 
             </p>
+
+            <div v-if="flag == 1">
+                <p style="color:red; font-size: 12px;">ошибка: пользователь с таким email уже существует</p>
+            </div>
         
 
             <p>
@@ -30,9 +34,7 @@
                 <span><a href="/">Вернуться обратно</a></span>
             </p>
 
-            <div v-if="flag == 1">
-                <p>ошибка: пользователь с таким email уже существует</p>
-            </div>
+            
 
 
     </div>

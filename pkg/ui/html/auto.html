@@ -18,6 +18,9 @@
 
                 <label for="password" id="password">Пароль</label>
                 <input type="password"  id="password" name="password" required /><br><br>
+                <div v-if="flag == 1">
+                    <p style="color: red; font-size: 12px;">ошибка: неверный логин или пароль</p> 
+                </div>
 
                 <button type="submit">Войти</button>
                 <button type="reset">Отменить</button>
@@ -27,9 +30,7 @@
                 <span>Нет аккаунта? <a href="/register">Регистрация</a></span>
             </p>
 
-            <div v-if="flag == 1">
-                <p>ошибка: неверный логин или пароль</p> 
-           </div>
+            
         </form>
            
 
