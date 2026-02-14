@@ -37,6 +37,7 @@ func (app *application) notesHandler(w http.ResponseWriter, r *http.Request) {
 func (app *application) getNote(w http.ResponseWriter, r *http.Request) {
 	UserID, _ := auth.GetUserId(r)
 	rows, err := app.db.Query(
+		// получение данных из бд и установка нужного формата для create_at
 		"SELECT id, content, user_id, DATE_FORMAT(created_at, '%m-%d %H:%i') as created_at FROM notes WHERE user_id = ?", UserID,
 	)
 
@@ -99,6 +100,7 @@ func (app *application) createNote(w http.ResponseWriter, r *http.Request) {
 	id, _ := result.LastInsertId()
 	note.ID = int(id)
 
+	// занесение поля create_at в структуру note
 	err = app.db.QueryRow("SELECT FROM notes created_at WHERE id = ?", id).Scan(&note.Time)
 
 	// отправляем обратно на фронт
