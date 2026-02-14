@@ -40,10 +40,14 @@
 
             <ul class="list-item">
                 <li class="list" v-for="(note, i) in nodes" :key="note.id">
-                    <span class="note-text">{{note.content}}</span>
+                <span class="note-text">{{note.content}}</span>
+                <div class="note-actions">
                     <button class="clear" @click="clearNotes(note.id)">Удалить</button>
                     <button class="edit" @click="editNotes(note.id)">Редактировать</button>
-                </li>
+                    <span class="note-date">{{note.create_at}}</span>
+                </div>
+            </li>
+                
             </ul>
             <div class="if" v-if="nodes.length === 0">Заметок нет</div>
         </div>
@@ -79,7 +83,7 @@
                     nodes: [],
                     email: "",
                     editingNote: "",
-                    editingID: null
+                    editingID: null,
 
                 }
             },
@@ -179,7 +183,8 @@
                         console.log(err)
                     }
 
-                }
+                },
+
                 
 
             }

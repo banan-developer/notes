@@ -37,7 +37,7 @@ func (app *application) notesHandler(w http.ResponseWriter, r *http.Request) {
 func (app *application) getNote(w http.ResponseWriter, r *http.Request) {
 	UserID, _ := auth.GetUserId(r)
 	rows, err := app.db.Query(
-		"SELECT id, content, user_id FROM notes WHERE user_id = ?", UserID,
+		"SELECT id, content, user_id, DATE_FORMAT(created_at, '%m-%d %H:%i') as created_at FROM notes WHERE user_id = ?", UserID,
 	)
 
 	if err != nil {
@@ -52,7 +52,7 @@ func (app *application) getNote(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var note Note
-		rows.Scan(&note.ID, &note.Content, &note.UserID)
+		rows.Scan(&note.ID, &note.Content, &note.UserID, &note.Time)
 		notes = append(notes, note)
 	}
 
@@ -98,6 +98,8 @@ func (app *application) createNote(w http.ResponseWriter, r *http.Request) {
 	// забирем id из result
 	id, _ := result.LastInsertId()
 	note.ID = int(id)
+
+	err = app.db.QueryRow("SELECT FROM notes created_at WHERE id = ?", id).Scan(&note.Time)
 
 	// отправляем обратно на фронт
 	w.Header().Set("Content-Type", "application/json")
@@ -199,6 +201,6 @@ func (app *application) updateNotes(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	// обновления заметки в бд с нужным idшником
+	// обновление заметки в бд с нужным idшником
 	_, err = app.db.Exec("UPDATE notes SET content = ? where id = ?", note.Content, note.ID)
 }
