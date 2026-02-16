@@ -31,7 +31,7 @@ func (app *application) autoresHandler(w http.ResponseWriter, r *http.Request) {
 		var UserId int
 		var PasswordFrombd string
 
-		// получаем данные из бд а потом сравниваем пароль из базы данных и написанным в input
+		// получаем данные из бд, а потом сравниваем пароль из базы данных и написанным в input
 		rows, err := app.db.Query(
 			"SELECT id, password FROM users WHERE login = ?",
 			email,
@@ -53,6 +53,7 @@ func (app *application) autoresHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// проверка пароля на совпадение, PasswordFromdb хэшированные, password полученый из поля input
 		HashError := bcrypt.CompareHashAndPassword(
 			[]byte(PasswordFrombd),
 			[]byte(password),

@@ -17,7 +17,7 @@ func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./pkg/ui/html/index.html")
 }
 
-// главный хэндлер(get,post и delete в одном хэндлере)
+// главный хэндлер(get, post, delete и put в одном хэндлере)
 func (app *application) notesHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:

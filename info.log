@@ -1,7 +1,8 @@
-INFO	2026/02/14 15:03:18 Подключено к MySQL
-INFO	2026/02/14 15:03:18 Запуск сервера на http://127.0.0.1:8080/login
-ERROR	2026/02/14 14:16:25 handlers.go:212: DB EDIT ERROR: strconv.Atoi: parsing "undefined": invalid syntax
-ERROR	2026/02/14 14:16:32 handlers.go:212: DB EDIT ERROR: strconv.Atoi: parsing "undefined": invalid syntax
+INFO	2026/02/16 17:53:57 Подключено к MySQL
+INFO	2026/02/16 17:53:57 Запуск сервера на http://127.0.0.1:8080/login
+ERROR	2026/02/16 15:45:50 handlers.go:148: DB ERROR sql: no rows in result set
+ERROR	2026/02/16 15:47:56 handlers.go:148: DB ERROR sql: no rows in result set
+DIT ERROR: strconv.Atoi: parsing "undefined": invalid syntax
 rs.login'
 ERROR	2026/02/13 17:34:50 handlers.go:144: DB ERROR sql: no rows in result set
 

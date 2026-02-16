@@ -29,12 +29,6 @@ type User struct {
 	Email string `json:"email"`
 }
 
-type Errors struct {
-	NoPerson      string `json:"no_person"`
-	PersonIsExec  string `json:"is_exec"`
-	WrongPassword string `json:"wrong_password"`
-}
-
 func main() {
 	// создание файла для отлавливания ошибок
 	f, err := os.OpenFile("info.log", os.O_RDWR|os.O_CREATE, 0666)

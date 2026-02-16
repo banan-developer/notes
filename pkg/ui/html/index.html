@@ -34,6 +34,9 @@
                 <input class="textArea" type="text" placeholder="Начните писать заметку ❤️" v-model="inputValue"
                     @keypress.enter="addNotes" />
             </div>
+            <!-- <div style="margin-left: 88%; margin-bottom: 10px;">
+                <span>{{fulltext}}/100</span>
+            </div> -->
             <div class="button-container">
                 <button class="addButton" @click="addNotes" >Добавить заметку</button>
             </div>
@@ -84,14 +87,17 @@
                     email: "",
                     editingNote: "",
                     editingID: null,
+                    fulltext: 0
 
                 }
             },
+            // выполнение методов сразу при загрузке
             mounted(){
                 this.loadNotes()
                 this.loadEmail()
             },
             methods: {
+                // добавление заметки, кидаем заметку на серв
                 async addNotes() {
                     if (!this.inputValue.trim()) return
 
@@ -114,6 +120,8 @@
                         console.error(err)
                     }
                 },
+
+                // удаление заметки, запрос на удаление заметки 
                 async clearNotes(noteId) {
                     try{
                         const res = await fetch(`/api/notes/${noteId}`, {
@@ -128,6 +136,7 @@
                 },
 
                 async loadNotes(){
+                    // прогрузка заметки
                     try{
                         const res = await fetch("/api/notes")
                         if (!res.ok) throw new Error("Ошибка загрузки заметок")
@@ -138,6 +147,7 @@
                         console.error(err)
                     }
                 },
+                // прогрузка аккаунта
                 async loadEmail(){
                     try{
                         const res = await fetch("/email")
@@ -169,7 +179,7 @@
                     }
                 },
 
-                // обнавление заметки
+                // обнавление заметки, после редактирование,
                 async updateNotes(noteId){
                     try{
                         const res = await fetch("/api/notes",{
