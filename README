@@ -9,11 +9,11 @@ Notes - простой веб-сервис для создания, хранен
 
 Стек:
 Frontent: HTML, CSS, JS(vue 3)
-Backand: Golang
-API: REST
+Backend: Golang
+REST API, HTTP
 База данных: Mysql
 
-Устновка и запуск:
+Установка и запуск:
 в main ветке: git clone https://github.com/banan-developer/notes
 cd NOTES
 go run ./web
